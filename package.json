@@ -1,0 +1,19 @@
+{
+  "name": "dobby-ws-control-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "tsc && node lib/index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/ws": "^6.0.3",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.7",
+    "ws": "^7.2.0"
+  }
+}
