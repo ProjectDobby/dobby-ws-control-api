@@ -9,11 +9,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/dateformat": "^3.0.1",
+    "@types/mongoose": "^5.5.30",
     "@types/ws": "^6.0.3",
     "typescript": "^3.7.2"
   },
   "dependencies": {
     "@types/node": "^12.12.7",
+    "dateformat": "^3.0.3",
+    "mongoose": "^5.7.10",
     "ws": "^7.2.0"
   }
 }
