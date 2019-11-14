@@ -4,7 +4,10 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "start": "tsc && node lib/index.js"
+    "start": "tsc && node lib/index.js",
+    "start-dev": "run-p start-dev-compiler start-dev-server",
+    "start-dev-server": "nodemon lib/index.js",
+    "start-dev-compiler": "tsc --watch"
   },
   "author": "",
   "license": "MIT",
@@ -12,6 +15,8 @@
     "@types/dateformat": "^3.0.1",
     "@types/mongoose": "^5.5.30",
     "@types/ws": "^6.0.3",
+    "nodemon": "^1.19.4",
+    "npm-run-all": "^4.1.5",
     "typescript": "^3.7.2"
   },
   "dependencies": {

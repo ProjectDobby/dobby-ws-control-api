@@ -1,27 +1,37 @@
 import * as fs from 'fs';
 import * as Websocket from 'ws';
-import dateFormat from 'dateformat';
+import {HandlerBase} from "./models/HandlerBase";
 
-import {db} from './database/database-connection'; 
+const hasArg = (arg: string): boolean => process.argv.slice(2).includes(arg);
+const debug = hasArg("-debug");
 
 if (!fs.existsSync('./lib/endpoints/'))
     fs.mkdirSync('./lib/endpoints/');
 
-fs.readdirSync('./lib/endpoints/').forEach(async (val: string) => {
-    console.log('./endpoints/' + val);
-    const handler = await import('./endpoints/' + val);
-    console.log('New handler found: %s', handler.handlerName);
+const handlers: Array<HandlerBase<any>> = [];
+
+fs.readdirSync('./lib/endpoints/').forEach((val: string) => {
+    try {
+        const importedHandlerClass = require('./endpoints/' + val);
+        const handler: HandlerBase<any> = new importedHandlerClass();
+        console.log('New handler found: %s (%s)', handler.handlerName, val);
+        handlers.push(handler);
+    } catch (e) {
+        console.log('Invalid handler found: %s', val);
+    }
 });
 
 const wss = new Websocket.Server({port: 8080}, () => console.log('Server running'));
 
 wss.on('connection', ws => {
-    
+
     // TODO implement security token
 
-    // TODO implement handlers
-    ws.on('message', (message: string) => {
-        const Current_Time = new Date();
-        console.log(dateFormat(Current_Time, "yyyy-mm-dd HH:MM:ss") + " : " + message);
+    ws.on('message', (msg: string) => {
+        const date = new Date();
+        if (debug) {
+            console.log('%s: %s', date.toLocaleString(), msg);
+        }
+
     });
 });
