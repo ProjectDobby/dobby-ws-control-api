@@ -69,7 +69,7 @@ class handler extends HandlerBase<any> {
                     }
                 });
                 return {status: "activate FAILED"};
-                
+
         }
     }
 
