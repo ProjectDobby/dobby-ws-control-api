@@ -1,4 +1,4 @@
-import {DeviceType} from "../database/models/devicesModel";
+import {DeviceType} from "../database/models/device/devicesModel";
 import {Mongoose} from "mongoose";
 
 export interface IncomingHandlerRequest<T> {
@@ -10,4 +10,3 @@ export interface IncomingHandlerRequest<T> {
     details: T,
     database: Mongoose
 }
-

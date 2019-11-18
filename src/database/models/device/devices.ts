@@ -8,4 +8,4 @@ export const devicesSchema = new Schema<devicesModel>({
     settings: {type: Object, default: {}}
 });
 
-export const devicesDbModel = mongoose.model('devices', devicesSchema);
+export const devicesDbModel = mongoose.model<devicesModel>('devices', devicesSchema);
