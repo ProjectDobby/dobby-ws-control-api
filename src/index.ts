@@ -41,7 +41,7 @@ wss.on('connection', ws => {
     // TODO implement security token
 
     // Handle request
-    ws.on('message', (msg: string, listener: Websocket) => {
+    ws.on('message', function (msg: string) {
         const date = new Date();
         if (debug) {
             console.log('%s: %s', date.toLocaleString(), msg);
@@ -50,14 +50,14 @@ wss.on('connection', ws => {
         try {
             ob = JSON.parse(msg);
         } catch (e) {
-            listener.send(JSON.stringify({status: "INVALID-JSON-ERROR"}));
+            this.send(JSON.stringify({status: "INVALID-JSON-ERROR"}));
             if (debug) console.log("Invalid JSON. Aborting.");
             return;
         }
         let req: IncomingHandlerRequest<any>;
         try {
             req = {
-                client: listener,
+                client: this,
                 database: mongoose,
                 details: ob.details,
                 deviceId: ob.deviceId,
@@ -68,7 +68,7 @@ wss.on('connection', ws => {
                 timeStamp: date
             };
         } catch (e) {
-            listener.send(JSON.stringify({status: "INVALID-REQUEST-ERROR"}));
+            this.send(JSON.stringify({status: "INVALID-REQUEST-ERROR"}));
             if (debug) console.log("Invalid Request. Aborting.");
             return;
         }
@@ -76,10 +76,10 @@ wss.on('connection', ws => {
         for (let h of handlers.filter(h => h.handlerName === ob.handler)) {
             try {
                 const ob = h.handle(req);
-                listener.send(JSON.stringify(ob));
+                this.send(JSON.stringify(ob));
                 handled = true;
             } catch (e) {
-                listener.send(JSON.stringify({status: "HANDLE-ERROR"}));
+                this.send(JSON.stringify({status: "HANDLE-ERROR"}));
                 if (debug) console.log("Exception while handling: %s. Aborting.", e);
                 return;
             }
