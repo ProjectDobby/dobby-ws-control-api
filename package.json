@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && node lib/index.js",
     "start-dev": "run-p start-dev-compiler start-dev-server",
-    "start-dev-server": "nodemon lib/index.js",
+    "start-dev-server": "nodemon lib/index.js -debug",
     "start-dev-compiler": "tsc --watch"
   },
   "author": "",

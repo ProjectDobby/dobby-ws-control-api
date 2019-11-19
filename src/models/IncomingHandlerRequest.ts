@@ -1,5 +1,6 @@
 import {DeviceType} from "../database/models/device/devicesModel";
 import {Mongoose} from "mongoose";
+import WebSocket = require("ws");
 
 export interface IncomingHandlerRequest<T> {
     deviceType: DeviceType,
