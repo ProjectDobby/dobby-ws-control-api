@@ -62,8 +62,8 @@ wss.on('connection', ws => {
                 details: ob.details,
                 deviceId: ob.deviceId,
                 deviceType: ob.deviceType,
-                response: function (p1: string) {
-                    listener.send(p1);
+                response: (p1: string) => {
+                    this.send(p1);
                 },
                 timeStamp: date
             };
