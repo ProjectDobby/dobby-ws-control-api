@@ -60,7 +60,7 @@ wss.on('connection', ws => {
                 client: this,
                 database: mongoose,
                 details: ob.details,
-                deviceId: ob.deviceId,
+                deviceMac: ob.deviceMac,
                 deviceType: ob.deviceType,
                 response: (p1: string) => {
                     this.send(p1);

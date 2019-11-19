@@ -6,6 +6,7 @@ export enum DeviceType{
 }
 
 export interface devicesModel extends Document {
+    mac: string,
     name: string,
     token: string,
     settings?: any

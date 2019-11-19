@@ -27,7 +27,7 @@ class handler extends HandlerBase<devicesModel> {
             case "register":
                 if (!this.handlers.has(req.client)) {
                     // Load device from database
-                    const device: devicesModel | null = await devicesDbModel.findById(req.deviceId);
+                    const device: devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
 
                     if (!device) {
                         // This little snitch of a device is not in the database

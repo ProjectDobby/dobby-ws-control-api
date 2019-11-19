@@ -28,7 +28,7 @@ class handler extends HandlerBase<any> {
             case "register":
                 if (!this.handlers.has(req.client)) {
                     // Load device from database
-                    const device: devicesModel | null = await devicesDbModel.findById(req.deviceId);
+                    const device: devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
 
                     if (!device) {
                         // This little snitch of a device is not in the database
@@ -64,7 +64,7 @@ class handler extends HandlerBase<any> {
 
             case "activate":
                 this.handlers.forEach((dev, ws) => {
-                    if (dev.id === details.deviceId) {
+                    if (dev._id === details.deviceId) {
                         ws.send(JSON.stringify({type: "activate"}));
                         return {status: "activate SUCCESS"};
                     }

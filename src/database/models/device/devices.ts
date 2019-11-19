@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import {devicesModel} from './devicesModel';
 
 export const devicesSchema = new Schema<devicesModel>({
+    mac: {type: String, required:true},
     name: {type: String, required:true},
     token: {type: String, required:true},
     type: {type: String, required:true},
