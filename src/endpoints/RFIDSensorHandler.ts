@@ -6,7 +6,7 @@ import {RFIDSensorDeviceRequestModel} from "../models/RFIDSensorDeviceRequestMod
 import WebSocket = require("ws");
 
 class handler extends HandlerBase<any> {
-    public handlerName = 'Keypad';
+    public handlerName = 'rfid';
     private listeners: Array<WebSocket> = [];
     private handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
 

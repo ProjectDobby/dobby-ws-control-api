@@ -6,7 +6,7 @@ import {TemperatureDeviceRequestModel} from "../models/TemperatureDeviceRequestM
 import WebSocket = require("ws");
 
 class handler extends HandlerBase<any> {
-    public handlerName = 'Temperature';
+    public handlerName = 'temperature';
     public listeners: Array<WebSocket> = [];
     public handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
 

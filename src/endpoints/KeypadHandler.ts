@@ -6,7 +6,7 @@ import {KeypadDeviceRequestModel} from "../models/KeypadDeviceRequestModel";
 import WebSocket = require("ws");
 
 class handler extends HandlerBase<any> {
-    public handlerName = 'Keypad';
+    public handlerName = 'keypad';
     private listeners: Array<WebSocket> = [];
     private handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
 
