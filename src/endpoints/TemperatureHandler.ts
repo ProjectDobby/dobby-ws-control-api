@@ -1,14 +1,15 @@
-import {HandlerBase} from '../models/HandlerBase';
+import {HandlerBase} from "../models/HandlerBase";
 import {IncomingHandlerRequest} from "../models/IncomingHandlerRequest";
 import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
+import {TemperatureDeviceRequestModel} from "../models/TemperatureDeviceRequestModel";
 
-class handler extends HandlerBase<devicesModel> {
-    public handlerName = 'door';
-    private listeners: Array<WebSocket> = [];
-    private handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
+class handler extends HandlerBase<any> {
+    public handlerName = 'Temperature';
+    public listeners: Array<WebSocket> = [];
+    public handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
 
-    async handle(req: IncomingHandlerRequest<any>): Promise<any> {
+    async handle(req: IncomingHandlerRequest<TemperatureDeviceRequestModel>): Promise<any> {
         const details = req.details;
         switch (details.scope.toLowerCase()) {
 
@@ -20,7 +21,7 @@ class handler extends HandlerBase<devicesModel> {
                     this.listeners.push(req.client);
                     return {status: "OK"};
                     // This websocket already is listening (kek)
-                } else return {status: "WARNING", message: "Already listening."};
+                } else return {status: "WARNING", message: "Already listening."}
 
             // Websocket wants to tell API that the device is available and ready
             case "register":
@@ -44,6 +45,7 @@ class handler extends HandlerBase<devicesModel> {
                         l.send(JSON.stringify({
                             scope: this.handlerName,
                             type: "inform",
+                            temperature: details.temperature,
                             device: this.handlers.get(req.client)
                         }));
                     });

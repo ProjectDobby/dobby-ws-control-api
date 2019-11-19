@@ -2,13 +2,14 @@ import {HandlerBase} from '../models/HandlerBase';
 import {IncomingHandlerRequest} from "../models/IncomingHandlerRequest";
 import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
+import {KeypadDeviceRequestModel} from "../models/KeypadDeviceRequestModel";
 
-class handler extends HandlerBase<devicesModel> {
-    public handlerName = 'door';
+class handler extends HandlerBase<any> {
+    public handlerName = 'Keypad';
     private listeners: Array<WebSocket> = [];
     private handlers: Map<WebSocket, devicesModel> = new Map<WebSocket, devicesModel>();
 
-    async handle(req: IncomingHandlerRequest<any>): Promise<any> {
+    async handle(req: IncomingHandlerRequest<KeypadDeviceRequestModel>): Promise<any> {
         const details = req.details;
         switch (details.scope.toLowerCase()) {
 
@@ -44,9 +45,11 @@ class handler extends HandlerBase<devicesModel> {
                         l.send(JSON.stringify({
                             scope: this.handlerName,
                             type: "inform",
+                            enteredPin: details.enteredPin,
                             device: this.handlers.get(req.client)
                         }));
                     });
+                    return {status: "SUCCESS"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
