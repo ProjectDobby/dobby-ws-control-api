@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const config = require('../config.json').database;
+const config = require('../../config.json').database;
 
 export const getConnection = () => {
     console.log('Connecting to mongodb://*HIDDEN*:*HIDDEN*@%s:%s/%s', config.host, config.port, config.database);
