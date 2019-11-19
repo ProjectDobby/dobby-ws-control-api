@@ -2,8 +2,8 @@ import {HandlerBase} from '../models/HandlerBase';
 import {IncomingHandlerRequest} from "../models/IncomingHandlerRequest";
 import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
-import {KeypadDeviceRequestModel} from "../models/KeypadDeviceRequestModel";
 import {RFIDSensorDeviceRequestModel} from "../models/RFIDSensorDeviceRequestModel";
+import WebSocket = require("ws");
 
 class handler extends HandlerBase<any> {
     public handlerName = 'Keypad';
