@@ -4,6 +4,7 @@ import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
 import {KeypadDeviceRequestModel} from "../models/KeypadDeviceRequestModel";
 import WebSocket = require("ws");
+import {model} from "mongoose";
 
 class handler extends HandlerBase<any> {
     public handlerName = 'pinpad';
@@ -32,12 +33,12 @@ class handler extends HandlerBase<any> {
 
                     if (!device) {
                         // This little snitch of a device is not in the database
+                        const model: devicesModel = details.specificDetails;
+                        await devicesDbModel.create(model);
                         return {status: "ERROR", message: "I donno man, seems kinda unknown to me"};
                     }
                     // Save handler
                     this.handlers.set(req.client, device);
-                    const model: devicesModel = details.specificDetails;
-                    await devicesDbModel.create(model);
                     return {status: "OK"};
                 } else return {status: "WARNING", message: "Already registered."};
 
@@ -52,26 +53,18 @@ class handler extends HandlerBase<any> {
                             device: this.handlers.get(req.client)
                         }));
                     });
-                    return {status: "SUCCESS"};
+                    return {status: "SUCCESS", message: "Successfull informed"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
-                this.handlers.forEach((dev, ws) => {
-                    if (dev._id === details.deviceId) {
-                        ws.send(JSON.stringify({type: "deactivate"}));
-                        return {status: "deactivate SUCCESS"};
-                    }
-                });
-                return {status: "deactivate FAILED"};
+                const modeldeactivate : devicesModel = details.specificDetails;
+                await devicesDbModel.findOneAndUpdate(modeldeactivate.id, modeldeactivate);
+                return {status: "deactivated"};
 
             case "activate":
-                this.handlers.forEach((dev, ws) => {
-                    if (dev._id === details.deviceId) {
-                        ws.send(JSON.stringify({type: "activate"}));
-                        return {status: "activate SUCCESS"};
-                    }
-                });
-                return {status: "activate FAILED"};
+                const modelactivate: devicesModel = details.specificDetails;
+                await devicesDbModel.findOneAndUpdate(modelactivate.id, modelactivate);
+                return {status: "activated"};
 
         }
     }

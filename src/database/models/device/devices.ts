@@ -6,6 +6,7 @@ export const devicesSchema = new Schema<devicesModel>({
     name: {type: String, required:true},
     token: {type: String, required:true},
     type: {type: String, required:true},
+    activated: {type: Boolean, required:true},
     settings: {type: Object, default: {}}
 });
 
