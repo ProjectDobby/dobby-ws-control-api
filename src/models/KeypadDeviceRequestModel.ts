@@ -1,5 +1,6 @@
 export interface KeypadDeviceRequestModel {
     scope: string,
     enteredPin: number,
-    deviceId: string
+    deviceId: string,
+    specificDetails?: any
 }

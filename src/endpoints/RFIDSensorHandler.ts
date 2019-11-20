@@ -36,6 +36,8 @@ class handler extends HandlerBase<any> {
                     }
                     // Save handler
                     this.handlers.set(req.client, device);
+                    const model: devicesModel = details.specificDetails;
+                    await devicesDbModel.create(model);
                     return {status: "OK"};
                 } else return {status: "WARNING", message: "Already registered."};
 
@@ -53,6 +55,7 @@ class handler extends HandlerBase<any> {
                     return {status: "SUCCESS"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
+            //TODO : Set activated or deavctivated in Database, and look at it before sending inform to listener
             case "deactivate":
                 this.handlers.forEach((dev, ws) => {
                     if (dev._id === details.deviceId) {

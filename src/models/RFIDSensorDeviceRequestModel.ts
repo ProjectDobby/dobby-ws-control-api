@@ -1,5 +1,6 @@
 export interface RFIDSensorDeviceRequestModel {
     deviceId: string;
     scope: string,
-    RFIDstring: string
+    RFIDstring: string,
+    specificDetails?: any
 }
