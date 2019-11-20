@@ -3,6 +3,7 @@ import {IncomingHandlerRequest} from "../models/IncomingHandlerRequest";
 import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
 import WebSocket = require("ws");
+import {Model} from "mongoose";
 
 class handler extends HandlerBase<devicesModel> {
     public handlerName = 'door';
@@ -42,15 +43,20 @@ class handler extends HandlerBase<devicesModel> {
 
             // Inform listeners that an event happened
             case "inform":
-                if (this.handlers.has(req.client)) {
-                    this.listeners.forEach(l => {
-                        l.send(JSON.stringify({
-                            scope: this.handlerName,
-                            type: "inform",
-                            device: this.handlers.get(req.client)
-                        }));
-                    });
-                    return {status: "SUCCESS", message: "Successfull informed"};
+                if (this.handlers.has(req.client))  {
+                    const device : devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
+                    // @ts-ignore
+                    if (device.activated){
+                        this.listeners.forEach(l => {
+                            l.send(JSON.stringify({
+                                scope: this.handlerName,
+                                type: "inform",
+                                device: this.handlers.get(req.client)
+                            }));
+                        });
+                        return {status: "SUCCESS", message: "Successfull informed"};
+                    }
+                    else return {status: "ERROR", message: "Device is deactivated"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":

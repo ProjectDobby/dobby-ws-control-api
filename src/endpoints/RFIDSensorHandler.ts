@@ -44,15 +44,20 @@ class handler extends HandlerBase<any> {
             // Inform listeners that an event happened
             case "inform":
                 if (this.handlers.has(req.client)) {
-                    this.listeners.forEach(l => {
-                        l.send(JSON.stringify({
-                            scope: this.handlerName,
-                            type: "inform",
-                            RFIDstring: details.RFIDstring,
-                            device: this.handlers.get(req.client)
-                        }));
-                    });
-                    return {status: "SUCCESS", message: "Successfull informed"};
+                    const device : devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
+                    // @ts-ignore
+                    if (device.activated){
+                        this.listeners.forEach(l => {
+                            l.send(JSON.stringify({
+                                scope: this.handlerName,
+                                type: "inform",
+                                RFIDstring: details.RFIDstring,
+                                device: this.handlers.get(req.client)
+                            }));
+                        });
+                        return {status: "SUCCESS", message: "Successfull informed"};
+                    }
+                    else return {status: "ERROR", message: "Device is deactivated"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
