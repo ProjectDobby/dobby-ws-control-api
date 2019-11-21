@@ -45,9 +45,8 @@ class handler extends HandlerBase<any> {
             // Inform listeners that an event happened
             case "inform":
                 if (this.handlers.has(req.client)) {
-                    const device : devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
-                    // @ts-ignore
-                    if (device.activated){
+                    const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
+                    if (device.activated) {
                         this.listeners.forEach(l => {
                             l.send(JSON.stringify({
                                 scope: this.handlerName,
@@ -57,18 +56,17 @@ class handler extends HandlerBase<any> {
                             }));
                         });
                         return {status: "SUCCESS", message: "Successfull informed"};
-                    }
-                    else return {status: "ERROR", message: "Device is deactivated"};
+                    } else return {status: "ERROR", message: "Device is deactivated"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
                 const modeldeactivate : devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate(modeldeactivate.id, modeldeactivate);
+                await devicesDbModel.findOneAndUpdate({id: modeldeactivate._id}, modeldeactivate);
                 return {status: "deactivated"};
 
             case "activate":
                 const modelactivate: devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate(modelactivate.id, modelactivate);
+                await devicesDbModel.findOneAndUpdate({id: modelactivate._id}, modelactivate);
                 return {status: "activated"};
 
         }
