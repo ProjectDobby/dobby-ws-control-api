@@ -5,6 +5,7 @@ export interface devicesModel extends Document {
     name: string,
     token: string,
     activated : boolean,
+    authorized: boolean,
     settings?: any
     type: string
 }

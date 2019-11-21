@@ -28,13 +28,13 @@ class handler extends HandlerBase<devicesModel> {
             case "register":
                 if (!this.handlers.has(req.client)) {
                     // Load device from database
-                    const device: devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
+                    const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
 
                     if (!device) {
                         // This little snitch of a device is not in the database
                         const model: devicesModel = details.specificDetails;
+                        model.authorized = false;
                         await devicesDbModel.create(model);
-                        return {status: "ERROR", message: "I donno man, seems kinda unknown to me"};
                     }
                     // Save handler
                     this.handlers.set(req.client, device);
@@ -43,9 +43,9 @@ class handler extends HandlerBase<devicesModel> {
 
             // Inform listeners that an event happened
             case "inform":
-                if (this.handlers.has(req.client))  {
-                    const device : devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
-                    if (device.activated){
+                if (this.handlers.has(req.client)) {
+                    const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
+                    if (device.activated) {
                         this.listeners.forEach(l => {
                             l.send(JSON.stringify({
                                 scope: this.handlerName,
@@ -54,18 +54,20 @@ class handler extends HandlerBase<devicesModel> {
                             }));
                         });
                         return {status: "SUCCESS", message: "Successfull informed"};
-                    }
-                    else return {status: "ERROR", message: "Device is deactivated"};
+                    } else return {status: "ERROR", message: "Device is deactivated"};
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
                 await devicesDbModel.update({type: "securitySensor"}, {activated: false});
                 return {status: "deactivated"};
 
-            /*case "activate":
-                const modelactivate: devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate({id: modelactivate._id}, modelactivate);
-                return {status: "activated"};*/
+            case "activate":
+                await devicesDbModel.update({type: "securitySensor"}, {activated: true});
+                return {status: "activated"};
+
+            case "authorize":
+                await devicesDbModel.findOneAndUpdate({mac: details.deviceMac}, {authorized: true});
+                return {status: "SUCCESS", msg: "Succesfull authorized"};
 
         }
     }

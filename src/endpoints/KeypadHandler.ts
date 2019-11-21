@@ -15,60 +15,32 @@ class handler extends HandlerBase<any> {
         const details = req.details;
         switch (details.scope.toLowerCase()) {
 
-            /*// Websocket wants to be informed about new incoming events from windows
-            case "listen":
-                // Check if it's already listening
-                if (!this.listeners.includes(req.client)) {
-                    // Add it to listeners since it's not listening
-                    this.listeners.push(req.client);
-                    return {status: "OK"};
-                    // This websocket already is listening (kek)
-                } else return {status: "WARNING", message: "Already listening."};*/
-
             // Websocket wants to tell API that the device is available and ready
             case "register":
                 if (!this.handlers.has(req.client)) {
                     // Load device from database
-                    const device: devicesModel | null = await devicesDbModel.findOne({mac: req.deviceMac});
+                    const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
 
                     if (!device) {
                         // This little snitch of a device is not in the database
                         const model: devicesModel = details.specificDetails;
+                        model.authorized = false;
                         await devicesDbModel.create(model);
-                        return {status: "ERROR", message: "I donno man, seems kinda unknown to me"};
                     }
                     // Save handler
                     this.handlers.set(req.client, device);
                     return {status: "OK"};
                 } else return {status: "WARNING", message: "Already registered."};
 
-            // Inform listeners that an event happened
-            /*case "inform":
-                if (this.handlers.has(req.client)) {
-                    const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
-                    if (device.activated) {
-                        this.listeners.forEach(l => {
-                            l.send(JSON.stringify({
-                                scope: this.handlerName,
-                                type: "inform",
-                                enteredPin: details.enteredPin,
-                                device: this.handlers.get(req.client)
-                            }));
-                        });
-                        return {status: "SUCCESS", message: "Successfull informed"};
-                    } else return {status: "ERROR", message: "Device is deactivated"};
-                } else return {status: "ERROR", message: "You cannot do that without being registered."};
-
-            case "deactivate":
-                const modeldeactivate : devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate({id: modeldeactivate._id}, modeldeactivate);
-                return {status: "deactivated"};*/
-
             case "activate":
                 if(details.enteredPin === 1234) {
                     await devicesDbModel.update({type: "securitySensor"}, {activated: true});
                     return {status: "activated"};
-                }
+                } else return {status: "ERROR", msg: "Wrong Pin"};
+
+            case "authorize":
+                await devicesDbModel.findOneAndUpdate({mac: req.deviceMac}, {authorized: true});
+                return {status: "SUCCESS", msg: "Succesfull authorized"};
 
         }
     }
