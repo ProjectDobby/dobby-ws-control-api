@@ -4,6 +4,8 @@ import {devicesModel} from "../database/models/device/devicesModel";
 import {devicesDbModel} from "../database/models/device/devices";
 import {RFIDSensorDeviceRequestModel} from "../models/RFIDSensorDeviceRequestModel";
 import WebSocket = require("ws");
+import {RFIDCardsModel} from "../database/models/RFIDCard/RFIDCardsModel";
+import {RFIDCardsDbModel} from "../database/models/RFIDCard/RFIDCards";
 
 class handler extends HandlerBase<any> {
     public handlerName = 'rfid';
@@ -15,14 +17,14 @@ class handler extends HandlerBase<any> {
         switch (details.scope.toLowerCase()) {
 
             // Websocket wants to be informed about new incoming events from windows
-            case "listen":
+            /*case "listen":
                 // Check if it's already listening
                 if (!this.listeners.includes(req.client)) {
                     // Add it to listeners since it's not listening
                     this.listeners.push(req.client);
                     return {status: "OK"};
                     // This websocket already is listening (kek)
-                } else return {status: "WARNING", message: "Already listening."};
+                } else return {status: "WARNING", message: "Already listening."};*/
 
             // Websocket wants to tell API that the device is available and ready
             case "register":
@@ -42,7 +44,7 @@ class handler extends HandlerBase<any> {
                 } else return {status: "WARNING", message: "Already registered."};
 
             // Inform listeners that an event happened
-            case "inform":
+            /*case "inform":
                 if (this.handlers.has(req.client)) {
                     const device : devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
                     if (device.activated){
@@ -62,12 +64,14 @@ class handler extends HandlerBase<any> {
             case "deactivate":
                 const modeldeactivate : devicesModel = details.specificDetails;
                 await devicesDbModel.findOneAndUpdate({id: modeldeactivate._id}, modeldeactivate);
-                return {status: "deactivated"};
+                return {status: "deactivated"};*/
 
             case "activate":
-                const modelactivate: devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate({id: modelactivate._id}, modelactivate);
-                return {status: "activated"};
+                const card: RFIDCardsModel | null = await RFIDCardsDbModel.findOne({cardstring: details.RFIDstring});
+                if (card) {
+                    await devicesDbModel.update({type: "securitySensor"}, {activated: true});
+                    return {status: "activated"};
+                } else return {status: "failed", message: "Card is not registered"};
 
         }
     }

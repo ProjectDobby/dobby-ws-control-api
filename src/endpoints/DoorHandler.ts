@@ -59,14 +59,13 @@ class handler extends HandlerBase<devicesModel> {
                 } else return {status: "ERROR", message: "You cannot do that without being registered."};
 
             case "deactivate":
-                const modeldeactivate : devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate({id: modeldeactivate._id}, modeldeactivate);
+                await devicesDbModel.update({type: "securitySensor"}, {activated: false});
                 return {status: "deactivated"};
 
-            case "activate":
+            /*case "activate":
                 const modelactivate: devicesModel = details.specificDetails;
                 await devicesDbModel.findOneAndUpdate({id: modelactivate._id}, modelactivate);
-                return {status: "activated"};
+                return {status: "activated"};*/
 
         }
     }
