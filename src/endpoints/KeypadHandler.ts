@@ -15,7 +15,7 @@ class handler extends HandlerBase<any> {
         const details = req.details;
         switch (details.scope.toLowerCase()) {
 
-            // Websocket wants to be informed about new incoming events from windows
+            /*// Websocket wants to be informed about new incoming events from windows
             case "listen":
                 // Check if it's already listening
                 if (!this.listeners.includes(req.client)) {
@@ -23,7 +23,7 @@ class handler extends HandlerBase<any> {
                     this.listeners.push(req.client);
                     return {status: "OK"};
                     // This websocket already is listening (kek)
-                } else return {status: "WARNING", message: "Already listening."};
+                } else return {status: "WARNING", message: "Already listening."};*/
 
             // Websocket wants to tell API that the device is available and ready
             case "register":
@@ -43,7 +43,7 @@ class handler extends HandlerBase<any> {
                 } else return {status: "WARNING", message: "Already registered."};
 
             // Inform listeners that an event happened
-            case "inform":
+            /*case "inform":
                 if (this.handlers.has(req.client)) {
                     const device: devicesModel = await devicesDbModel.findOne({mac: req.deviceMac}) as devicesModel;
                     if (device.activated) {
@@ -62,12 +62,13 @@ class handler extends HandlerBase<any> {
             case "deactivate":
                 const modeldeactivate : devicesModel = details.specificDetails;
                 await devicesDbModel.findOneAndUpdate({id: modeldeactivate._id}, modeldeactivate);
-                return {status: "deactivated"};
+                return {status: "deactivated"};*/
 
             case "activate":
-                const modelactivate: devicesModel = details.specificDetails;
-                await devicesDbModel.findOneAndUpdate({id: modelactivate._id}, modelactivate);
-                return {status: "activated"};
+                if(details.enteredPin === 1234) {
+                    await devicesDbModel.update({type: "securitySensor"}, {activated: true});
+                    return {status: "activated"};
+                }
 
         }
     }
