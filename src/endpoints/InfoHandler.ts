@@ -13,6 +13,9 @@ class handler extends HandlerBase<any>{
 
         switch (details.scope.toLowerCase()) {
 
+            case "getall":
+                const devices : Array<devicesModel> = await devicesDbModel.find({type: "securitySensor"});
+                req.client.send(devices);
 
         }
     }
