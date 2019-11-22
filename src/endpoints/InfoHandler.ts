@@ -20,3 +20,5 @@ class handler extends HandlerBase<any>{
         }
     }
 }
+
+module.exports = handler;

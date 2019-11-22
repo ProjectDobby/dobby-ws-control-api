@@ -49,6 +49,7 @@ wss.on('connection', ws => {
         let ob: any;
         try {
             ob = JSON.parse(msg);
+            console.log(ob);
         } catch (e) {
             this.send(JSON.stringify({status: "INVALID-JSON-ERROR"}));
             if (debug) console.log("Invalid JSON. Aborting.");
