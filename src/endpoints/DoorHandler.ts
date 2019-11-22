@@ -33,8 +33,7 @@ class handler extends HandlerBase<devicesModel> {
                     if (!device) {
                         // This little snitch of a device is not in the database
                         const model: devicesModel = details.specificDetails;
-                        model.authorized = false;
-                        await devicesDbModel.create(model);
+                        await devicesDbModel.insertMany(model);
                     }
                     // Save handler
                     this.handlers.set(req.client, device);
